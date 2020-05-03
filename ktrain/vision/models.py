@@ -69,7 +69,7 @@ def image_classifier(name,
                      train_data,
                      val_data=None,
                      freeze_layers=None, 
-                     metric='accuracy',
+                     metric=['accuracy'],
                      optimizer_name = U.DEFAULT_OPT,
                      multilabel=None,
                      multigpu_number=None, 
@@ -90,7 +90,7 @@ def image_classifier(name,
         freeze_layers (int):  number of beginning layers to make untrainable
                             If None, then all layers except new Dense layers
                             will be frozen/untrainable.
-        metric (string):  metric to use
+        metric (list[string]):  metric or metrics to use
         optimizer_name(str): name of Keras optimizer (e.g., 'adam', 'sgd')
         multilabel(bool):  If True, model will be build to support
                            multilabel classificaiton (labels are not mutually exclusive).
@@ -183,7 +183,7 @@ def image_classifier(name,
                                       pt_ps = pt_ps)
         parallel_model = multi_gpu_model(model, gpus=multigpu_number)
         parallel_model.compile(optimizer=optimizer_name, 
-                               loss='categorical_crossentropy', metrics=[metric])
+                               loss='categorical_crossentropy', metrics=metric)
         return parallel_model
     else:
         model = build_visionmodel(name,
@@ -193,7 +193,7 @@ def image_classifier(name,
                                   activation=activation,
                                   pt_fc = pt_fc,
                                   pt_ps = pt_ps)
-        model.compile(optimizer=optimizer_name, loss=loss_func, metrics=[metric])
+        model.compile(optimizer=optimizer_name, loss=loss_func, metrics=metric)
         return model
 
 
